@@ -1,0 +1,102 @@
+﻿@page "/LionProfile/Index"
+@model LionPetManagement_LeQuangLong.Pages.LionProfilePage.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>List</h1>
+
+<form method="get" class="mb-3">
+    <div class="input-group">
+        <input type="text" name="SearchString" value="@Model.SearchString" class="form-control" placeholder="Search by LionTypeName" />
+        <input type="number" name="Weight" value="@Model.Weight" class="form-control" placeholder="Search by Weight" />
+        <button class="btn btn-primary" type="submit">Search</button>
+    </div>
+</form>
+
+<p>
+    <a asp-page="Create" class="btn btn-primary">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Weight</th>
+            <th>Characteristics</th>
+            <th>Warning</th>
+            <th>LionTypeName</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Items)
+        {
+            <tr>
+                <td>
+                    @if (User.IsInRole("2") || User.IsInRole("3"))
+                    {
+                        <a asp-page="./Edit" asp-route-id="@item.LionTypeId">@item.LionName</a>
+                    }
+                    else
+                    {
+                        <span>You have no permission to edit</span>
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Weight)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Characteristics)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Warning)
+                </td>
+                <td>
+                    @(item.LionType != null ? item.LionType.LionTypeName : string.Empty)
+                </td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.LionTypeId">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.LionTypeId">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.LionTypeId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (Model.TotalPages > 1)
+{
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            <li class="page-item @(Model.PageIndex == 1 ? "disabled" : "")">
+                <a class="page-link" asp-route-PageIndex="@(Model.PageIndex - 1)" asp-route-SearchString="@Model.SearchString">Previous</a>
+                @* <a class="page-link" asp-route-PageIndex="@(Model.PageIndex - 1)" asp-route-SearchString="@Model.Weight">Previous</a>  *@
+            </li>
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(Model.PageIndex == i ? "active" : "")"><a class="page-link" asp-route-PageIndex="@i" asp-route-SearchString="@Model.SearchString">@i</a></li>
+                @* <li class="page-item @(Model.PageIndex == i ? "active" : "")"><a class="page-link" asp-route-PageIndex="@i" asp-route-SearchString="@Model.Weight">@i</a></li> *@
+            }
+            <li class="page-item @(Model.PageIndex == Model.TotalPages ? "disabled" : "")">
+                <a class="page-link" asp-route-PageIndex="@(Model.PageIndex + 1)" asp-route-SearchString="@Model.SearchString">Next</a>
+                @* <a class="page-link" asp-route-PageIndex="@(Model.PageIndex + 1)" asp-route-SearchString="@Model.Weight">Next</a> *@
+            </li>
+        </ul>
+    </nav>
+}
+
+@* @section Scripts {
+    <script src="~/js/signalr/dist/browser/signalr.js"></script>
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/signalrhub")
+            .build();
+
+        connection.on("ReceiveDelete", function () {
+            location.reload();
+        });
+
+        connection.start().catch(err => console.error(err.toString()));
+    </script>
+} *@
