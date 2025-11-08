@@ -1,8 +1,10 @@
 ﻿using BusinessLogic.Interfaces;
 using BusinessObject.Models;
+using LionPetManagement_LeQuangLong.Hubs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.SignalR;
 
 namespace LionPetManagement_LeQuangLong.Pages.LionProfilePage
 {
@@ -10,10 +12,12 @@ namespace LionPetManagement_LeQuangLong.Pages.LionProfilePage
     public class DeleteModel : PageModel
     {
         private readonly ILionProfileService _lionProfileService;
+        private readonly IHubContext<SignalRHub> _hubContext;
 
-        public DeleteModel(ILionProfileService lionProfileService)
+        public DeleteModel(ILionProfileService lionProfileService, IHubContext<SignalRHub> hubContext)
         {
             _lionProfileService = lionProfileService;
+            _hubContext = hubContext;
         }
 
         [BindProperty]
@@ -51,6 +55,7 @@ namespace LionPetManagement_LeQuangLong.Pages.LionProfilePage
             {
                 LionProfile = lionprofile;
                 await _lionProfileService.DeleteAsync(id.Value);
+                await _hubContext.Clients.All.SendAsync("ReceiveDelete");
             }
 
             return RedirectToPage("./Index");

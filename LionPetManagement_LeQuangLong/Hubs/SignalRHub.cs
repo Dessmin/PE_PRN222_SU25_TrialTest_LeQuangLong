@@ -12,10 +12,11 @@ namespace LionPetManagement_LeQuangLong.Hubs
             _entityService = entityService;
         }
 
-        public async Task HubDelete(string Id)
+        public async Task HubDelete(int Id)
         {
-            await _entityService.DeleteAsync(int.Parse(Id));
+            await _entityService.DeleteAsync(Id);
             await Clients.All.SendAsync("ReceiveDelete", Id);
         }
     }
 }
+//@microsoft/signalr@latest
