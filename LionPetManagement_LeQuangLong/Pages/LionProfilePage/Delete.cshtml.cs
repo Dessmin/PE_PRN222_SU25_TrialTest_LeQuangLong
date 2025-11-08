@@ -1,10 +1,12 @@
 ﻿using BusinessLogic.Interfaces;
 using BusinessObject.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace LionPetManagement_LeQuangLong.Pages.LionProfilePage
 {
+    [Authorize(Roles = "2")]
     public class DeleteModel : PageModel
     {
         private readonly ILionProfileService _lionProfileService;

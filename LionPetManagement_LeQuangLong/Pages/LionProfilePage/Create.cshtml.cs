@@ -1,11 +1,14 @@
 ﻿using BusinessLogic.Interfaces;
 using BusinessObject.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace LionPetManagement_LeQuangLong.Pages.LionProfilePage
 {
+    [Authorize(Roles = "2")]
+
     public class CreateModel : PageModel
     {
         private readonly ILionProfileService _context;
