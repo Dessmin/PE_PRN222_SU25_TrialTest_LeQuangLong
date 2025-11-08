@@ -15,7 +15,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="LionProfile.LionTypeId" class="control-label"> LionTypeName</label>
-                <select asp-for="LionProfile.LionTypeId" class ="form-control" asp-items="Model.LionTypes"></select>
+                <select asp-for="LionProfile.LionTypeId" class="form-control" asp-items="ViewBag.LionTypeId"></select>
             </div>
             <div class="form-group">
                 <label asp-for="LionProfile.LionName" class="control-label"></label>
@@ -38,11 +38,6 @@
                 <span asp-validation-for="LionProfile.Warning" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="LionProfile.ModifiedDate" class="control-label"></label>
-                <input asp-for="LionProfile.ModifiedDate" class="form-control" />
-                <span asp-validation-for="LionProfile.ModifiedDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
@@ -54,5 +49,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

@@ -15,9 +15,13 @@
     </div>
 </form>
 
-<p>
-    <a asp-page="Create" class="btn btn-primary">Create New</a>
-</p>
+@if (User.IsInRole("2") || User.IsInRole("3"))
+{
+    <p>
+        <a asp-page="Create" class="btn btn-primary">Create New</a>
+    </p>
+}
+
 <table class="table">
     <thead>
         <tr>
@@ -26,7 +30,10 @@
             <th>Characteristics</th>
             <th>Warning</th>
             <th>LionTypeName</th>
-            <th></th>
+            @if (User.IsInRole("2") || User.IsInRole("3"))
+            {
+                <th></th>
+            }
         </tr>
     </thead>
     <tbody id="TBodyId">
@@ -34,14 +41,7 @@
         {
             <tr id="@item.LionProfileId">
                 <td>
-                    @if (User.IsInRole("2") || User.IsInRole("3"))
-                    {
-                        <a asp-page="./Edit" asp-route-id="@item.LionTypeId">@item.LionName</a>
-                    }
-                    else
-                    {
-                        <span>You have no permission to edit</span>
-                    }
+                    @Html.DisplayFor(modelItem => item.LionName)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Weight)
@@ -55,11 +55,19 @@
                 <td>
                     @(item.LionType != null ? item.LionType.LionTypeName : string.Empty)
                 </td>
-                <td>
-                    <a asp-page="./Edit" asp-route-id="@item.LionProfileId">Edit</a> |
-                    <a asp-page="./Details" asp-route-id="@item.LionProfileId">Details</a> |
-                    <a asp-page="./Delete" asp-route-id="@item.LionProfileId">Delete</a>
-                </td>
+                @if (User.IsInRole("2"))
+                {
+                    <td>
+                        <a asp-page="./Edit" asp-route-id="@item.LionProfileId">Edit</a> |
+                        <a asp-page="./Details" asp-route-id="@item.LionProfileId">Details</a> |
+                        <a asp-page="./Delete" asp-route-id="@item.LionProfileId">Delete</a>
+                    </td>
+                } else if (User.IsInRole("3"))
+                {
+                    <td>
+                        <a asp-page="./Details" asp-route-id="@item.LionProfileId">Details</a>
+                    </td>
+                }
             </tr>
         }
     </tbody>

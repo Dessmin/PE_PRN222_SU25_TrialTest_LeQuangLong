@@ -1,20 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BusinessLogic.Interfaces;
+using BusinessObject.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using BusinessObject.Models;
-using DataAccess;
 
 namespace LionPetManagement_LeQuangLong.Pages.LionProfilePage
 {
     public class DetailsModel : PageModel
     {
-        private readonly DataAccess.SU25LionDBContext _context;
+        private readonly ILionProfileService _context;
 
-        public DetailsModel(DataAccess.SU25LionDBContext context)
+        public DetailsModel(ILionProfileService context)
         {
             _context = context;
         }
@@ -28,7 +23,7 @@ namespace LionPetManagement_LeQuangLong.Pages.LionProfilePage
                 return NotFound();
             }
 
-            var lionprofile = await _context.LionProfiles.FirstOrDefaultAsync(m => m.LionProfileId == id);
+            var lionprofile = await _context.GetByIdAsync(id.Value);
             if (lionprofile == null)
             {
                 return NotFound();

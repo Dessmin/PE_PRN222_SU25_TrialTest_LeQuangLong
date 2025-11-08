@@ -15,7 +15,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="LionProfile.LionProfileId" />
             <div class="form-group">
-                <label asp-for="LionProfile.LionTypeId" class="control-label"></label>
+                <label asp-for="LionProfile.LionTypeId" class="control-label"> LionTypeName</label>
                 <select asp-for="LionProfile.LionTypeId" class="form-control" asp-items="ViewBag.LionTypeId"></select>
                 <span asp-validation-for="LionProfile.LionTypeId" class="text-danger"></span>
             </div>
