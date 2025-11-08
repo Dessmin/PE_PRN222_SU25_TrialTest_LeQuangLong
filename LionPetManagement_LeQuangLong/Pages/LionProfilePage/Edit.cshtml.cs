@@ -46,6 +46,7 @@ namespace LionPetManagement_LeQuangLong.Pages.LionProfilePage
             ValidateModel();
             if (!ModelState.IsValid)
             {
+                ViewData["LionTypeId"] = new SelectList(await _context.GetLionTypesAsync(), "LionTypeId", "LionTypeName");
                 return Page();
             }
 
