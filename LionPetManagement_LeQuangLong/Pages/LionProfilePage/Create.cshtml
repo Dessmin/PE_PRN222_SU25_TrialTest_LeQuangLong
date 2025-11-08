@@ -14,8 +14,8 @@
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="LionProfile.LionTypeId" class="control-label"></label>
-                <select asp-for="LionProfile.LionTypeId" class ="form-control" asp-items="ViewBag.LionTypeId"></select>
+                <label asp-for="LionProfile.LionTypeId" class="control-label"> LionTypeName</label>
+                <select asp-for="LionProfile.LionTypeId" class ="form-control" asp-items="Model.LionTypes"></select>
             </div>
             <div class="form-group">
                 <label asp-for="LionProfile.LionName" class="control-label"></label>

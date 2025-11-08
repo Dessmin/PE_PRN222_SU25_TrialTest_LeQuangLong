@@ -1,5 +1,6 @@
 using BusinessLogic.Interfaces;
 using BusinessLogic.Services;
+using LionPetManagement_LeQuangLong.Hubs;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -43,7 +44,7 @@ app.UseAuthorization();
 
 app.MapRazorPages();
 
-//app.MapHub<SignalRHub>("/signalrhub");
+app.MapHub<SignalRHub>("/signalrhub");
 
 
 app.Run();

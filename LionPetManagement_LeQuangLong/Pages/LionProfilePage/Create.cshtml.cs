@@ -1,28 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BusinessLogic.Interfaces;
+using BusinessObject.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using BusinessObject.Models;
-using DataAccess;
 
 namespace LionPetManagement_LeQuangLong.Pages.LionProfilePage
 {
+    [Authorize(Roles = "2")]
     public class CreateModel : PageModel
     {
-        private readonly DataAccess.SU25LionDBContext _context;
+        private readonly ILionProfileService _context;
 
-        public CreateModel(DataAccess.SU25LionDBContext context)
+        public CreateModel(ILionProfileService context)
         {
             _context = context;
         }
 
-        public IActionResult OnGet()
+        public SelectList LionTypes { get; set; } = default!;
+        public void OnGet()
         {
-        ViewData["LionTypeId"] = new SelectList(_context.LionTypes, "LionTypeId", "LionTypeId");
-            return Page();
+            var lionTypes = _context.GetLionTypesAsync().Result;
+            LionTypes = new SelectList(lionTypes, "LionTypeId", "LionTypeName");
         }
 
         [BindProperty]
@@ -33,11 +32,22 @@ namespace LionPetManagement_LeQuangLong.Pages.LionProfilePage
         {
             if (!ModelState.IsValid)
             {
+                var lionTypes = _context.GetLionTypesAsync().Result;
+                LionTypes = new SelectList(lionTypes, "LionTypeId", "LionTypeName");
                 return Page();
             }
 
-            _context.LionProfiles.Add(LionProfile);
-            await _context.SaveChangesAsync();
+            var lion = new LionProfile
+            {
+                LionName = LionProfile.LionName,
+                Weight = LionProfile.Weight,
+                LionTypeId = LionProfile.LionTypeId,
+                Characteristics = LionProfile.Characteristics,
+                Warning = LionProfile.Warning,
+                ModifiedDate = DateTime.Now
+            };
+
+            await _context.AddAsync(lion);
 
             return RedirectToPage("./Index");
         }

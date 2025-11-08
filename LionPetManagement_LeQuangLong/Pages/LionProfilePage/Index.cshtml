@@ -5,7 +5,7 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>List</h1>
+<h1>Index</h1>
 
 <form method="get" class="mb-3">
     <div class="input-group">
@@ -29,10 +29,10 @@
             <th></th>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="TBodyId">
         @foreach (var item in Model.Items)
         {
-            <tr>
+            <tr id="@item.LionProfileId">
                 <td>
                     @if (User.IsInRole("2") || User.IsInRole("3"))
                     {
@@ -56,9 +56,9 @@
                     @(item.LionType != null ? item.LionType.LionTypeName : string.Empty)
                 </td>
                 <td>
-                    <a asp-page="./Edit" asp-route-id="@item.LionTypeId">Edit</a> |
-                    <a asp-page="./Details" asp-route-id="@item.LionTypeId">Details</a> |
-                    <a asp-page="./Delete" asp-route-id="@item.LionTypeId">Delete</a>
+                    <a asp-page="./Edit" asp-route-id="@item.LionProfileId">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.LionProfileId">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.LionProfileId">Delete</a>
                 </td>
             </tr>
         }
@@ -71,32 +71,45 @@
         <ul class="pagination">
             <li class="page-item @(Model.PageIndex == 1 ? "disabled" : "")">
                 <a class="page-link" asp-route-PageIndex="@(Model.PageIndex - 1)" asp-route-SearchString="@Model.SearchString">Previous</a>
-                @* <a class="page-link" asp-route-PageIndex="@(Model.PageIndex - 1)" asp-route-SearchString="@Model.Weight">Previous</a>  *@
             </li>
             @for (int i = 1; i <= Model.TotalPages; i++)
             {
                 <li class="page-item @(Model.PageIndex == i ? "active" : "")"><a class="page-link" asp-route-PageIndex="@i" asp-route-SearchString="@Model.SearchString">@i</a></li>
-                @* <li class="page-item @(Model.PageIndex == i ? "active" : "")"><a class="page-link" asp-route-PageIndex="@i" asp-route-SearchString="@Model.Weight">@i</a></li> *@
             }
             <li class="page-item @(Model.PageIndex == Model.TotalPages ? "disabled" : "")">
                 <a class="page-link" asp-route-PageIndex="@(Model.PageIndex + 1)" asp-route-SearchString="@Model.SearchString">Next</a>
-                @* <a class="page-link" asp-route-PageIndex="@(Model.PageIndex + 1)" asp-route-SearchString="@Model.Weight">Next</a> *@
             </li>
         </ul>
     </nav>
 }
 
-@* @section Scripts {
-    <script src="~/js/signalr/dist/browser/signalr.js"></script>
-    <script>
-        const connection = new signalR.HubConnectionBuilder()
-            .withUrl("/signalrhub")
-            .build();
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
 
-        connection.on("ReceiveDelete", function () {
-            location.reload();
+<script>
+    "use strict";
+
+    var connection = new signalR.HubConnectionBuilder().withUrl("/signalrhub").build();
+
+    connection.start().then(function () {
+        console.log("Connected to the SignalR Hub");
+    }).catch(function (err) {
+        return console.error(err.toString());
+    });
+
+    connection.on("ReceiveDelete", function (Id) {
+        var currentPage = @Model.PageIndex;
+        var totalPages = @Model.TotalPages;
+
+        $('#TBodyId').find(`tr[id='${Id}']`).fadeOut(300, function() {
+            $(this).remove();
+
+            var remainingItems = $('#TBodyId tr').length;
+
+            if (remainingItems === 0 && currentPage > 1) {
+                window.location.href = `/LionProfile/Index?pageIndex=${currentPage - 1}`;
+            } else if (remainingItems < @Model.TotalPages && currentPage <= totalPages) {
+                window.location.href = `/LionProfile/Index?pageIndex=${currentPage}`;
+            }
         });
-
-        connection.start().catch(err => console.error(err.toString()));
-    </script>
-} *@
+    });
+</script>

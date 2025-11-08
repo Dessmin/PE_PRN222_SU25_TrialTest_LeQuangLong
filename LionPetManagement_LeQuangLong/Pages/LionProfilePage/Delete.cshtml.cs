@@ -1,22 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BusinessLogic.Interfaces;
+using BusinessObject.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using BusinessObject.Models;
-using DataAccess;
 
 namespace LionPetManagement_LeQuangLong.Pages.LionProfilePage
 {
     public class DeleteModel : PageModel
     {
-        private readonly DataAccess.SU25LionDBContext _context;
+        private readonly ILionProfileService _lionProfileService;
 
-        public DeleteModel(DataAccess.SU25LionDBContext context)
+        public DeleteModel(ILionProfileService lionProfileService)
         {
-            _context = context;
+            _lionProfileService = lionProfileService;
         }
 
         [BindProperty]
@@ -29,7 +24,7 @@ namespace LionPetManagement_LeQuangLong.Pages.LionProfilePage
                 return NotFound();
             }
 
-            var lionprofile = await _context.LionProfiles.FirstOrDefaultAsync(m => m.LionProfileId == id);
+            var lionprofile = await _lionProfileService.GetByIdAsync(id.Value);
 
             if (lionprofile == null)
             {
@@ -49,12 +44,11 @@ namespace LionPetManagement_LeQuangLong.Pages.LionProfilePage
                 return NotFound();
             }
 
-            var lionprofile = await _context.LionProfiles.FindAsync(id);
+            var lionprofile = await _lionProfileService.GetByIdAsync(id.Value);
             if (lionprofile != null)
             {
                 LionProfile = lionprofile;
-                _context.LionProfiles.Remove(LionProfile);
-                await _context.SaveChangesAsync();
+                await _lionProfileService.DeleteAsync(id.Value);
             }
 
             return RedirectToPage("./Index");
